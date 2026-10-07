@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend
+    container_name: search-results-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+
+  db:
+    image: postgres:15
+    container_name: search-results-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-search_results}
+      POSTGRES_USER: ${DB_USER:-search}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-localdev}
+    ports:
+      - "15432:5432"
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
